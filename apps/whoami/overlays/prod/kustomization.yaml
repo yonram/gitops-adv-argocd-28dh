@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: whoami-prod
+resources:
+  - ../../base
+replicas:
+  - name: whoami
+    count: 3
+images:
+  - name: traefik/whoami
+    newTag: v1.10.3
+configMapGenerator:
+  - name: whoami-env
+    literals:
+      - ENV=prod
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
