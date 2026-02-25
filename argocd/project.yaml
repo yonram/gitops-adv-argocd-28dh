@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: whoami-platform
+  namespace: argocd
+spec:
+  description: "Proyecto GitOps multi-entorno para whoami"
+  sourceRepos:
+  - https://github.com/yonram/gitops-adv-argocd-28dh.git
+
+  destinations:
+  - server: https://kubernetes.default.svc
+    namespace: whoami-dev
+  - server: https://kubernetes.default.svc
+    namespace: whoami-stage
+  - server: https://kubernetes.default.svc
+    namespace: whoami-prod
+
+  # Permitimos Namespace (necesario para CreateNamespace=true)
+  clusterResourceWhitelist:
+  - group: ""
+    kind: Namespace
+
+  # Permitimos SOLO recursos namespaced típicos de app
+  namespaceResourceWhitelist:
+  - group: apps
+    kind: Deployment
+  - group: ""
+    kind: Service
+  - group: ""
+    kind: ConfigMap
